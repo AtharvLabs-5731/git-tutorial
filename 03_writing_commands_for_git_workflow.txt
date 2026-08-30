@@ -1,0 +1,787 @@
+# Git: Working Directory, Staging Area & Commits
+
+## 1. `git status` before `git init`
+
+```bash
+git status
+```
+
+Output:
+
+```text
+fatal: not a git repository (or any of the parent directories): .git
+```
+
+### Meaning
+
+Git is saying:
+
+> "This folder is not currently a Git repository."
+
+A folder becomes a Git repository when we run:
+
+```bash
+git init
+```
+
+---
+
+# 2. `git init`
+
+```bash
+git init
+```
+
+Output:
+
+```text
+Initialized empty Git repository in .../21_Git/.git/
+```
+
+### Meaning
+
+`git init` creates a hidden `.git` folder inside the current directory.
+
+The `.git` folder contains Git's internal information, including:
+
+* commits
+* branches
+* history
+* staging information
+* configuration
+
+After `git init`, the folder becomes a **Git repository**.
+
+---
+
+# 3. `git status` after `git init`
+
+```bash
+git status
+```
+
+Output:
+
+```text
+On branch master
+
+No commits yet
+
+Untracked files:
+    01_introduction_to_git_and_github.txt
+    02_git_workflow.txt
+    03_writing_commands_for_git_workflow.txt
+```
+
+### Meaning
+
+Git sees the three files, but Git is **not tracking them yet**.
+
+These files are called:
+
+```text
+Untracked files
+```
+
+Git knows they exist, but they have not been added to the staging area.
+
+---
+
+# 4. `git add .`
+
+```bash
+git add .
+```
+
+### Meaning
+
+`.` means:
+
+> Add all changes from the current directory.
+
+So all three files are moved from:
+
+```text
+Working Directory
+        ↓
+Staging Area
+```
+
+Check using:
+
+```bash
+git status
+```
+
+You will see:
+
+```text
+Changes to be committed:
+    new file: 01_introduction_to_git_and_github.txt
+    new file: 02_git_workflow.txt
+    new file: 03_writing_commands_for_git_workflow.txt
+```
+
+They are now **staged**.
+
+---
+
+# 5. `git commit`
+
+```bash
+git commit -m "Initial Commit"
+```
+
+### Meaning
+
+`git commit` saves the staged changes into Git's repository/history.
+
+Flow:
+
+```text
+Working Directory
+       ↓
+    git add
+       ↓
+Staging Area
+       ↓
+   git commit
+       ↓
+Repository
+```
+
+Your first commit was:
+
+```text
+Initial Commit
+```
+
+Git created a commit ID:
+
+```text
+ccdcc4c
+```
+
+This is the unique identifier of that commit.
+
+---
+
+# 6. `git status` after commit
+
+```bash
+git status
+```
+
+Output:
+
+```text
+On branch master
+nothing to commit, working tree clean
+```
+
+### Meaning
+
+Everything currently tracked by Git matches the latest commit.
+
+There are:
+
+* no unstaged changes
+* no staged changes
+* nothing waiting to be committed
+
+So:
+
+```text
+Working Directory = Staging Area = Latest Commit
+```
+
+---
+
+# 7. Modify a file after committing
+
+You modified:
+
+```text
+01_introduction_to_git_and_github.txt
+```
+
+Then:
+
+```bash
+git status
+```
+
+shows:
+
+```text
+Changes not staged for commit:
+
+    modified: 01_introduction_to_git_and_github.txt
+```
+
+### Meaning
+
+You changed the file in the **Working Directory**, but you have not run `git add` yet.
+
+So:
+
+```text
+Repository
+    ↑
+    │ previous version
+    │
+Working Directory
+    ↑
+    │ modified version
+```
+
+The new changes are not yet in the staging area.
+
+---
+
+# 8. Modify another file
+
+You then modified:
+
+```text
+02_git_workflow.txt
+```
+
+Now:
+
+```bash
+git status
+```
+
+shows:
+
+```text
+Changes not staged for commit:
+
+    modified: 01_introduction_to_git_and_github.txt
+    modified: 02_git_workflow.txt
+```
+
+This means **both files have changes**, but neither is staged yet.
+
+---
+
+# 9. Stage only one file
+
+You ran:
+
+```bash
+git add 01_introduction_to_git_and_github.txt
+```
+
+### Why did you use the filename instead of `git add .`?
+
+Because you wanted to commit only:
+
+```text
+01_introduction_to_git_and_github.txt
+```
+
+and continue working on:
+
+```text
+02_git_workflow.txt
+```
+
+This is completely correct.
+
+Now Git has:
+
+```text
+                    Git
+                     │
+        ┌────────────┴────────────┐
+        ↓                         ↓
+     Staged                    Unstaged
+        │                         │
+01_introduction...         02_git_workflow...
+```
+
+`git status` confirms:
+
+```text
+Changes to be committed:
+    modified: 01_introduction_to_git_and_github.txt
+
+Changes not staged for commit:
+    modified: 02_git_workflow.txt
+```
+
+### Important
+
+This is one of the main purposes of the **Staging Area**.
+
+You can choose **exactly which changes** should go into the next commit.
+
+---
+
+# 10. Commit only the staged file
+
+You then ran:
+
+```bash
+git commit -m "Redesigned Introduction to Git & Github"
+```
+
+Git committed only:
+
+```text
+01_introduction_to_git_and_github.txt
+```
+
+It did NOT commit:
+
+```text
+02_git_workflow.txt
+```
+
+because `02_git_workflow.txt` was not staged.
+
+The commit output says:
+
+```text
+1 file changed
+```
+
+That confirms only one file was included.
+
+---
+
+# 11. Check commit history
+
+```bash
+git log
+```
+
+You now have two commits:
+
+```text
+8527969  Redesigned Introduction to Git & Github
+ccdcc4c  Initial Commit
+```
+
+The newest commit is at the top.
+
+Think of Git history like this:
+
+```text
+Newest
+   ↓
+8527969  Redesigned Introduction to Git & Github
+   ↓
+ccdcc4c  Initial Commit
+   ↓
+Oldest
+```
+
+---
+
+# 12. `git log --oneline`
+
+Instead of showing detailed information:
+
+```bash
+git log
+```
+
+you can use:
+
+```bash
+git log --oneline
+```
+
+Output:
+
+```text
+8527969 Redesigned Introduction to Git & Github
+ccdcc4c Initial Commit
+```
+
+### Difference
+
+`git log`:
+
+```text
+Commit ID
+Author
+Date
+Commit message
+etc.
+```
+
+`git log --oneline`:
+
+```text
+Short Commit ID + Commit message
+```
+
+It is useful for getting a quick overview of history.
+
+---
+
+# 13. Final `git status`
+
+After committing the first file:
+
+```bash
+git status
+```
+
+shows:
+
+```text
+Changes not staged for commit:
+
+    modified: 02_git_workflow.txt
+```
+
+### Meaning
+
+This is exactly what you wanted.
+
+Your first file:
+
+```text
+01_introduction_to_git_and_github.txt
+```
+
+has already been committed.
+
+Your second file:
+
+```text
+02_git_workflow.txt
+```
+
+still contains changes that you have not staged or committed.
+
+You can continue modifying it.
+
+---
+
+# Most Important Concept
+
+Git has three main areas:
+
+```text
+1. Working Directory
+2. Staging Area
+3. Repository
+```
+
+### Working Directory
+
+Where you actually edit files.
+
+```text
+Edit file
+   ↓
+Working Directory
+```
+
+### Staging Area
+
+Where you select the changes that should be included in the next commit.
+
+```bash
+git add filename
+```
+
+### Repository
+
+Where committed changes are permanently stored in Git history.
+
+```bash
+git commit -m "message"
+```
+
+---
+
+# Your Exact Example
+
+Initially:
+
+```text
+01.txt
+02.txt
+03.txt
+```
+
+You ran:
+
+```bash
+git add .
+```
+
+So:
+
+```text
+01.txt ──→ Staging
+02.txt ──→ Staging
+03.txt ──→ Staging
+```
+
+Then:
+
+```bash
+git commit -m "Initial Commit"
+```
+
+All three were committed.
+
+---
+
+Later you modified:
+
+```text
+01.txt
+02.txt
+```
+
+So:
+
+```text
+01.txt → Modified
+02.txt → Modified
+```
+
+Then you ran:
+
+```bash
+git add 01.txt
+```
+
+Therefore:
+
+```text
+01.txt → Staging Area
+02.txt → Working Directory
+```
+
+Then:
+
+```bash
+git commit -m "Redesigned Introduction to Git & Github"
+```
+
+Only `01.txt` was committed.
+
+Final state:
+
+```text
+Repository:
+    Initial Commit
+    Redesigned Introduction to Git & Github
+
+Working Directory:
+    02_git_workflow.txt → modified
+
+Staging Area:
+    empty
+```
+
+---
+
+# `git add .` vs `git add filename`
+
+## `git add .`
+
+```bash
+git add .
+```
+
+Stages **all detected changes** in the current directory.
+
+Example:
+
+```text
+01.txt → staged
+02.txt → staged
+03.txt → staged
+```
+
+## `git add filename`
+
+```bash
+git add 01.txt
+```
+
+Stages **only that specific file**.
+
+Example:
+
+```text
+01.txt → staged
+02.txt → not staged
+03.txt → not staged
+```
+
+### Rule to remember
+
+> `git add .` = Stage everything.
+
+> `git add filename` = Stage only this file.
+
+---
+
+# Very Important: Commit Does NOT Automatically Commit Everything
+
+Suppose:
+
+```text
+01.txt → staged
+02.txt → unstaged
+03.txt → unstaged
+```
+
+Then:
+
+```bash
+git commit -m "My commit"
+```
+
+Only this gets committed:
+
+```text
+01.txt
+```
+
+Because:
+
+> **A commit normally contains what is currently in the staging area.**
+
+---
+
+# Useful Mental Model
+
+Think of the staging area like a **basket**.
+
+You have many files on your table:
+
+```text
+01.txt
+02.txt
+03.txt
+04.txt
+```
+
+You want to commit only `01.txt` and `03.txt`.
+
+You put only those into the basket:
+
+```bash
+git add 01.txt
+git add 03.txt
+```
+
+Basket:
+
+```text
+01.txt
+03.txt
+```
+
+Then you commit:
+
+```bash
+git commit -m "Update files"
+```
+
+Git commits only the files in the basket.
+
+The other files remain outside the basket and can be worked on later.
+
+---
+
+# Commands You Learned
+
+```bash
+git init
+```
+
+Create a new Git repository.
+
+```bash
+git status
+```
+
+Check the current state of the repository.
+
+```bash
+git add .
+```
+
+Stage all changes.
+
+```bash
+git add filename
+```
+
+Stage only a specific file.
+
+```bash
+git commit -m "message"
+```
+
+Create a commit using the staged changes.
+
+```bash
+git log
+```
+
+Show detailed commit history.
+
+```bash
+git log --oneline
+```
+
+Show compact commit history.
+
+---
+
+# Your Workflow
+
+The workflow you just practiced is:
+
+```text
+Create/Edit files
+       ↓
+git status
+       ↓
+git add filename
+       ↓
+git status
+       ↓
+git commit -m "message"
+       ↓
+git status
+       ↓
+git log
+```
+
+The key idea is:
+
+```text
+Working Directory
+       ↓
+    git add
+       ↓
+Staging Area
+       ↓
+   git commit
+       ↓
+   Repository
+```
+
+## One sentence to remember
+
+> **Edit → Stage → Commit**
+
+```text
+Working Directory → Staging Area → Repository
+```
