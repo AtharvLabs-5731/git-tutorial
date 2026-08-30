@@ -1,0 +1,111 @@
+Configuring Git
+
+Run these commands in your terminal after installing Git:
+    git config --global user.name "Your Name"
+    git config --global user.email "you@example.com"
+    git config --global core.editor "code --wait" # optional, sets VS Code as editor
+
+To check your config:
+    git config --list
+
+1. Working Directory — "I'm editing"
+This is your actual project folder on your computer.
+
+Suppose you have:
+    my_project/
+    │
+    ├── app.py
+    ├── calculator.py
+    └── README.md
+
+You open app.py and change:
+    print("Hello")
+
+to:
+    print("Hello Athrav")
+
+At this point, the change is only in your Working Directory.
+Git knows:
+    "Hey, app.py has been changed."
+But Git has not prepared that change for saving as a version yet.
+
+You can check this with:
+    git status
+You might see:
+    modified: app.py
+
+So:
+    Working Directory = place where you actually work/edit your files.
+
+
+2. Staging Area — "I want to save this change"
+
+Now suppose you changed three files:
+    app.py
+    calculator.py
+    README.md
+
+But you only want to save app.py right now.
+
+You use:
+    git add app.py
+Now app.py moves conceptually into the Staging Area.
+Think of the staging area as a waiting room.
+
+You are telling Git:
+    "I have finished this change, and I want this particular change to be included in my next save."
+
+You can check:
+    git status
+You may see:
+    Changes to be committed:
+        modified: app.py
+While calculator.py and README.md are still just in the Working Directory.
+
+You can also stage everything:
+    git add .
+
+So:
+    Staging Area = place where you select/prepared changes that you want to commit.
+
+
+3. Repository — "This version is saved"
+Now you actually save the staged changes by creating a commit:
+    git commit -m "Updated app greeting"
+Git takes everything in the Staging Area and stores it in the Repository.
+
+The repository keeps a history of your commits.
+For example:
+    Commit 1 → Created project
+    Commit 2 → Added calculator
+    Commit 3 → Updated app greeting
+
+So:
+    Repository = where Git permanently records your committed project history.
+
+
+4. One very important point
+git add does NOT permanently save your changes.
+It only puts them into the staging area.
+    git add app.py
+means:
+    "Prepare this file for the next commit."
+While:
+    git commit -m "message"
+means:
+    "Now officially record these staged changes in Git history."
+
+
+5. What happens if you make another change?
+
+Suppose you commit:
+    git add app.py
+    git commit -m "Version 1"
+
+Then you modify app.py again.   
+The new change goes back to the Working Directory.
+
+So Git can have:
+    Repository:      Version 1 ✅
+    Staging Area:     Empty
+    Working Directory: Version 2 changes ✏️
