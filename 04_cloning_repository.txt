@@ -1,0 +1,62 @@
+1. Copy the repository URL from <Code>
+For example, from GitHub:
+    https://github.com/username/my-project.git
+
+2. Open Git Bash
+Go to the folder where you want to store the project.
+For example:
+    cd ~/Documents
+
+3. Run git clone
+    git clone https://github.com/username/my-project.git
+Git will download the entire repository into a new folder called my-project.
+
+4. Enter the cloned repository
+    cd my-project
+
+5. Check the repository
+    git status
+You should see something like:
+    On branch main
+    Your branch is up to date with 'origin/main'.
+    nothing to commit, working tree clean
+
+Complete example
+    cd ~/Documents
+    git clone https://github.com/username/my-project.git
+    cd my-project
+    git status
+
+What git clone actually does
+When you run:
+    git clone <repository-url>
+Git automatically:
+    GitHub Repository
+        ↓
+    git clone
+        ↓
+    Your Computer
+        ↓
+    my-project/
+    ├── .git/
+    ├── README.md
+    ├── src/
+    └── ...
+The important part is the .git folder. It contains the Git repository information, so commands like git pull, git commit, and git push work.
+
+1. git init
+For any repository you want to track with git you should run git init in order to initialize the empty repository
+git init
+You’ll see:
+    Initialized empty Git repository in /path/to/my-first-repo/.git/
+This .git folder is the brain of your repository — it stores the entire history of your project.
+
+you should not run git init inside the repository you clone because it is already being tracked by git
+so once you run git clone <url> you already get .git folder init 
+
+2. Cloning an existing repository
+    git clone https://github.com/user/repo.git
+This downloads the entire project with history from a remote server like GitHub.
+
+If you see at openai/whisper repository there are 171+ commits
+so you can track from initial commit

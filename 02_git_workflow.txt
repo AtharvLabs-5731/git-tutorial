@@ -39,7 +39,7 @@ So:
 
 
 2. Staging Area — "I want to save this change"
-
+ 
 Now suppose you changed three files:
     app.py
     calculator.py
