@@ -1,0 +1,262 @@
+Tracking and managing changes
+
+Checking Status
+The most important diagnostic command in Git:
+    git status
+
+This tells you:
+    Which branch you're on
+    What files are modified
+    What files are staged
+    What files are untracked
+
+Status States
+    # Untracked (new file)
+    Untracked files:
+    newfile.txt
+    
+    # Modified (changed but not staged)
+    Changes not staged for commit:
+    modified: existing.txt
+    
+    # Staged (ready to commit)
+    Changes to be committed:
+    new file: newfile.txt
+    modified: existing.txt
+
+Viewing Changes
+1. See Unstaged Changes
+    git diff
+Shows what you've changed but haven't staged yet.
+ex ->
+    In about.html
+    <footer>
+-
++       Copyright all rights reserved
+    </footer>
+
+    In index.html
+-    <title>Home - My Awesome Website</title>
++    <title>Home : My Awesome Website</title>
+
+So these are the changes that you have made in about.html & index.html
+Now from queting out of it just press q 
+
+2. Restore the  Unstaged changes
+Now after modifiying about.html & index.html
+    git status
+will says me :
+    On branch master
+    Changes not staged for commit:
+        (use "git add <file>..." to update what will be committed)
+        (use "git restore <file>..." to discard changes in working directory)
+            modified:   about.html
+            modified:   index.html
+i.e eighter you can stage the changes for commit by 
+    git add <file>
+or you can restore the changes by
+    git restore <file>
+Now suppose my boss don't like the changes that I have made in index.html & he says me revort the changes I don't like those changes then
+    git restore index.html
+then 
+    <title>Home : My Awesome Website</title>
+becomes
+    <title>Home - My Awesome Website</title>
+
+3. Restore the Staged changes
+Now my boss says <title>Home ~ My Awesome Website</title> do this 
+so Now
+    git status
+        modified:   about.html
+        modified:   index.html
+and then I stage those changes by
+    git add .
+Now again my boss says that I don't like those changes so revert it
+But Now I stage those changes
+At the time of staging the changes
+    git status will says me
+        Changes to be committed:
+            (use "git restore --staged <file>..." to unstage)
+                modified:   about.html
+                modified:   index.html
+
+So to restore the stage changes
+git restore --staged index.html -> now it just remove the index.html file from staging area
+So
+git status
+    Changes to be committed:
+        (use "git restore --staged <file>..." to unstage)
+            modified:   about.html
+
+    Changes not staged for commit:
+        (use "git add <file>..." to update what will be committed)
+        (use "git restore <file>..." to discard changes in working directory)
+                modified:   index.html
+so changes are not restore till this time
+To restore the changes do :
+    git restore index.html
+
+4. See Staged Changes
+    git diff --staged
+Shows what will go into your next commit.
+
+5. See Changes Between Commits
+    git diff HEAD~1 HEAD
+Compares the last commit with the current one. So this will show me difference between current and previous commit 
+
+6. Undoing Changes
+Git provides several ways to undo changes depending on where they are:
+1. Discard Working Directory Changes
+To restore a file to its last committed state:
+    git restore file.txt
+Or for all files:
+    git restore .
+Warning: This permanently discards uncommitted changes!
+
+suppose sumbody is comming & do jaajakw and aidaaiewd to my index.html & about.html file & then close the tab so that you can't do CTRL + z
+Now for that we use :
+    git restore .
+
+2. Unstage Files
+To remove files from staging area but keep changes:
+    git restore --staged file.txt
+Or the older syntax:
+    git reset HEAD file.txt
+
+7. Amend the Last Commit
+Now suppose my boss wants this :
+    Copyright - All Rights Reserved
+insted of this : 
+    Copyright  all rights reserved
+and he didn't want to do the new commit for this
+he wants that changes must be in current commit which is Added footer
+then you add the file in stage area by 
+    git add about.html
+and then amend the commit by
+    git commit --amend -m "Added final footer"
+OR 
+Forgot to include a file or want to change the commit message?
+then you amend the last commit
+
+    # Stage the forgotten file
+    git add forgotten.txt
+    
+    # Amend the previous commit
+    git commit --amend -m "New commit message"
+
+8. Reset to a Previous Commit
+A. Soft Reset (keeps changes in staging):
+    git reset --soft HEAD~1
+
+B. Mixed Reset (keeps changes in working directory):
+    git reset HEAD~1
+
+C. Hard Reset (discards all changes):
+    git reset --hard HEAD~1
+Warning: --hard permanently deletes uncommitted work!
+
+Suppose your history is:
+    A → B → C
+            ↑
+            HEAD
+You want to go back from C to B:
+
+1. Soft Reset
+git reset --soft HEAD~1
+What happens?
+    Git moves HEAD back one commit, but your changes from that commit remain staged.
+
+Before:
+    Repository:
+    A → B → C
+            ↑
+            HEAD
+    Staging: empty
+    Working: clean
+
+After:
+    Repository:
+    A → B
+        ↑
+        HEAD
+
+    Staging: C's changes ✅
+    Working: clean
+
+For example:
+You have:
+    A → B → C
+Commit C contains:
+    hello.cpp
+After:
+    git reset --soft HEAD~1
+Git removes commit C from the history, but the changes introduced by C are now waiting in the Staging Area.
+
+So:
+git status
+might show:
+    Changes to be committed:
+        modified: hello.cpp
+Why use it?
+When you realize:
+    "I committed this, but I forgot something. I want to edit it and create the commit again."
+You can do:
+    git reset --soft HEAD~1
+Then modify the files and commit again.
+
+2. Mixed Reset
+    git reset HEAD~1
+This is the default reset mode.
+It moves HEAD backward and removes the changes from the staging area, but keeps the actual file changes in your working directory.
+
+Before:
+    A → B → C
+            ↑
+            HEAD
+After:
+    A → B
+        ↑
+        HEAD
+    Staging: empty
+    Working Directory: C's changes ✅
+So the commit disappears from the branch history, but your code is still there.
+
+Example:
+    git reset HEAD~1
+Then:
+    git status
+might show:
+    Changes not staged for commit:
+        modified: hello.cpp
+Think of it like this:
+Soft:
+    "Remove the commit, but keep everything ready to commit again."
+Mixed:
+    "Remove the commit, and unstage everything, but don't delete my code."
+
+3. Hard Reset
+    git reset --hard HEAD~1
+This is the dangerous one.
+It moves HEAD backward and also makes your working directory and staging area match the old commit.
+
+Before:
+    A → B → C
+            ↑
+            HEAD
+After:
+    A → B
+        ↑
+        HEAD
+    Staging: cleared
+    Working Directory: reverted ❌
+The changes introduced by C are removed from your working files.
+
+For example, suppose commit C changed:
+    cout << "Hello Atharv";
+and commit B had:
+    cout << "Hello";
+After:
+    git reset --hard HEAD~1
+your file goes back to:
+    cout << "Hello";
+The "Atharv" change is gone from your working directory.
