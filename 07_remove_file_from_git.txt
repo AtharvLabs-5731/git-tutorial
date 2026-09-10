@@ -1,0 +1,47 @@
+Manually deleting file can risky because by deleting the file by git it will initally move it to staged area and then after commiting it It will remove the file 
+
+1. Removing Files from Git
+There are two different situations:
+A1. Delete the file completely
+    git rm file.txt
+This does two things:
+    Git Repository  → removes file
+    Working Folder  → removes file
+Then commit:
+    git commit -m "Remove file.txt"
+
+Example
+Suppose you have:
+    project/
+    ├── main.cpp
+    ├── notes.txt
+    └── password.txt
+You want to completely delete notes.txt.
+    git rm notes.txt
+    git commit -m "Remove notes.txt"
+After this:
+    project/
+    ├── main.cpp
+    └── password.txt
+notes.txt is gone from your working directory and Git's tracked version.
+
+A2. Delete the file & then again regain the file before commiting it
+    git rm file.txt
+then 
+git status will show me :
+    On branch master
+    Changes to be committed:
+        (use "git restore --staged <file>..." to unstage)
+            deleted:    notes.txt
+then do 
+    git restore --staged file.txt
+then git status will show me : 
+    Changes not staged for commit:
+        (use "git add <file>..." to update what will be committed)
+        (use "git restore <file>..." to discard changes in working directory)
+            modified:   07_remove_file_from_git.txt
+            deleted:    notes.txt
+so to restore the file do :
+    git restore file.txt
+
+    
