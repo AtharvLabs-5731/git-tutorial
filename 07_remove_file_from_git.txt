@@ -44,4 +44,39 @@ then git status will show me :
 so to restore the file do :
     git restore file.txt
 
-    
+2. Remove from Git but Keep the File
+    git rm --cached file.txt
+    git commit -m "Stop tracking file.txt"
+This is useful when you accidentally committed a file that should be ignored.
+
+
+This is where --cached becomes important.
+    git rm --cached file.txt
+This means:
+    "Git, stop tracking this file, but don't delete my actual file."
+So:
+    Git Repository  → ❌ Stop tracking
+    Working Folder  → ✅ Keep file
+
+Example
+You accidentally committed:
+    .env
+Your .env contains:
+    DB_PASSWORD=abc123
+    API_KEY=xyz456
+You don't want GitHub to track it.
+First:
+    git rm --cached .env
+Then add it to .gitignore:
+    echo ".env" >> .gitignore
+Then:
+    git add .gitignore
+    git commit -m "Stop tracking .env"
+Now:
+    .env
+    │
+    ├── Your computer → ✅ Still exists
+    │
+    └── Git → ❌ No longer tracked
+⚠️ Important
+If the secret was already pushed to GitHub, git rm --cached does not erase it from the repository's history. For real credentials, you should rotate/revoke them and, if necessary, clean the Git history.

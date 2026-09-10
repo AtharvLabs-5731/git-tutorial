@@ -3,4 +3,4 @@ passwards.txt
 *.log
 node_module/
 !important.log
-.env
+.env.txt
