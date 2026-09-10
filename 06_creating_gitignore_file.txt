@@ -63,3 +63,8 @@ For example, if you already did:
     git add .env
     git commit -m "added env"
 and then add .env to .gitignore, Git will continue tracking it.
+You need:
+    git rm --cached .env
+Then:
+    git commit -m "Stop tracking .env"
+After that, Git will ignore future changes to .env.
