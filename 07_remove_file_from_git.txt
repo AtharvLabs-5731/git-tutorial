@@ -68,7 +68,7 @@ You don't want GitHub to track it.
 First:
     git rm --cached .env
 Then add it to .gitignore:
-    echo ".env" >> .gitignore
+    echo ".env" >> .gitignore  ---> It sometimes not work properly
 Then:
     git add .gitignore
     git commit -m "Stop tracking .env"
@@ -80,3 +80,72 @@ Now:
     └── Git → ❌ No longer tracked
 ⚠️ Important
 If the secret was already pushed to GitHub, git rm --cached does not erase it from the repository's history. For real credentials, you should rotate/revoke them and, if necessary, clean the Git history.
+
+3. git restore --staged
+Now let's look at this:
+    git restore --staged passwords.txt
+This is different from git rm --cached.
+
+Suppose:
+    git add passwords.txt
+You accidentally staged it.
+Your situation is:
+    Working Directory
+        ↓
+    passwords.txt
+        ↓
+    Staging Area
+        ↓
+    passwords.txt
+You realize:
+    "Oops! I don't want to commit this yet."
+Run:
+    git restore --staged passwords.txt
+Now:
+    Working Directory
+        ↓
+    passwords.txt ✅
+
+    Staging Area
+        ↓
+    passwords.txt ❌
+The file still exists on your computer and Git hasn't deleted it.
+You're simply saying:
+    "Remove this file from the staging area."
+
+4. Difference: git restore --staged vs git rm --cached
+This is a very important distinction.
+
+Command                             Working file                                 Staging/Tracking
+git restore --staged file.txt	    ✅ Keeps	                                   ❌ Removes from staging
+git rm --cached file.txt	        ✅ Keeps	                                   ❌ Removes from tracking
+git rm file.txt	                    ❌ Deletes	                               ❌ Removes from tracking
+
+Think about it this way:
+    git restore --staged
+            ↓
+    "I don't want to commit this RIGHT NOW."
+
+    git rm --cached
+            ↓
+    "Git should STOP TRACKING this file."
+
+    git rm
+            ↓
+    "Delete this file completely."
+
+5. Moving/Renaming Files
+You can rename a file using:
+    git mv oldname.txt newname.txt
+
+For example:
+    git mv test.txt notes.txt
+Then:
+    git commit -m "Rename test.txt to notes.txt"
+Git understands that the file was renamed.
+Conceptually:
+    test.txt
+        ↓
+        ↓ git mv
+        ↓
+    notes.txt
