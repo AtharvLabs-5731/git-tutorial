@@ -1,0 +1,857 @@
+# Git Cheat Sheet
+
+============================================================
+1. GIT BASICS
+============================================================
+
+git --version
+    Check installed Git version
+
+git config --global user.name "Your Name"
+    Set your Git username
+
+git config --global user.email "you@example.com"
+    Set your Git email
+
+git config --list
+    View Git configuration
+
+git init
+    Initialize a new Git repository
+
+git clone <repository-url>
+    Download/clone an existing repository
+
+IMPORTANT:
+    git clone already creates the .git folder.
+    Do NOT run git init again inside a cloned repository.
+
+
+============================================================
+2. GIT'S 3 MAIN AREAS
+============================================================
+
+Working Directory
+    Where you edit your files
+
+        |
+        | git add
+        v
+
+Staging Area
+    Where you select changes for the next commit
+
+        |
+        | git commit
+        v
+
+Repository
+    Where committed project history is stored
+
+
+Golden Rule:
+
+    EDIT -> ADD -> COMMIT
+
+
+============================================================
+3. CHECK REPOSITORY STATUS
+============================================================
+
+git status
+
+Shows:
+    - Current branch
+    - Modified files
+    - Staged files
+    - Untracked files
+
+
+Common states:
+
+Untracked:
+    Git sees the file but is not tracking it.
+
+Modified:
+    File was changed but changes are not staged.
+
+Staged:
+    Changes are ready for the next commit.
+
+
+============================================================
+4. ADD / STAGE FILES
+============================================================
+
+git add file.txt
+    Stage one file
+
+git add file1.txt file2.txt
+    Stage multiple files
+
+git add .
+    Stage all detected changes in the current directory
+
+
+Remember:
+
+    git add file.txt
+        = Stage only this file
+
+    git add .
+        = Stage everything
+
+
+============================================================
+5. COMMIT
+============================================================
+
+git commit -m "Your commit message"
+
+    Save staged changes into Git history
+
+
+Example:
+
+git add app.py
+git commit -m "Update app greeting"
+
+
+IMPORTANT:
+
+    Modified != Committed
+
+    git add       -> Stage changes
+    git commit    -> Save staged changes to history
+
+
+============================================================
+6. VIEW CHANGES
+============================================================
+
+git diff
+    Show unstaged changes
+
+    Working Directory <-> Staging Area
+
+
+git diff --staged
+    Show staged changes
+
+    Staging Area <-> Last Commit
+
+
+git diff HEAD~1 HEAD
+    Compare previous commit with current commit
+
+
+When Git opens a long diff/log screen:
+    Press q to quit.
+
+
+============================================================
+7. UNDO / RESTORE CHANGES
+============================================================
+
+git restore file.txt
+    Discard unstaged changes in a specific file
+    Restores the file to the last committed version
+
+git restore .
+    Discard all unstaged changes
+
+
+WARNING:
+    These commands discard uncommitted working-directory changes.
+
+
+Example:
+
+    Someone changed index.html and about.html.
+    You do not want those changes.
+
+    git restore index.html
+    git restore about.html
+
+    Or:
+
+    git restore .
+
+
+============================================================
+8. UNSTAGE A FILE
+============================================================
+
+git restore --staged file.txt
+
+    Remove the file from the staging area
+    BUT keep the changes in your working directory
+
+
+Before:
+
+    Working Directory -> Modified
+    Staging Area       -> Staged
+
+
+After:
+
+    Working Directory -> Modified
+    Staging Area       -> Not staged
+
+
+Older syntax:
+
+git reset HEAD file.txt
+
+
+IMPORTANT DISTINCTION:
+
+git restore --staged file.txt
+    = "I don't want to commit this yet."
+      Unstage the file but keep my changes.
+
+
+============================================================
+9. COMMIT HISTORY
+============================================================
+
+git log
+    Show detailed commit history
+
+git log --oneline
+    Show compact commit history
+
+
+Example:
+
+8527969 Update footer
+ccdcc4c Initial commit
+
+
+The newest commit appears first.
+
+
+============================================================
+10. AMEND THE LAST COMMIT
+============================================================
+
+Use when you want to modify the latest commit
+instead of creating a new commit.
+
+git add file.txt
+git commit --amend -m "New commit message"
+
+
+Useful when:
+    - You forgot to include a file
+    - You want to change the latest commit
+    - You want to correct the commit message
+
+
+Example:
+
+git add about.html
+git commit --amend -m "Added final footer"
+
+
+IMPORTANT:
+    --amend changes the latest commit.
+
+
+============================================================
+11. RESET TO A PREVIOUS COMMIT
+============================================================
+
+Suppose history is:
+
+    A -> B -> C
+             ^
+            HEAD
+
+You want to go back from C to B.
+
+------------------------------------------------------------
+A. SOFT RESET
+------------------------------------------------------------
+
+git reset --soft HEAD~1
+
+Result:
+
+    A -> B
+         ^
+        HEAD
+
+    C's changes -> STAGING AREA
+
+Meaning:
+
+    "Remove the commit, but keep its changes staged."
+
+
+Use when:
+    You want to recreate the commit while keeping
+    everything ready to commit again.
+
+
+------------------------------------------------------------
+B. MIXED RESET
+------------------------------------------------------------
+
+git reset HEAD~1
+
+Same as:
+
+git reset --mixed HEAD~1
+
+Result:
+
+    A -> B
+         ^
+        HEAD
+
+    C's changes -> WORKING DIRECTORY
+
+Meaning:
+
+    "Remove the commit, unstage its changes,
+     but keep my code."
+
+
+Mixed is the default reset mode.
+
+
+------------------------------------------------------------
+C. HARD RESET
+------------------------------------------------------------
+
+git reset --hard HEAD~1
+
+Result:
+
+    A -> B
+         ^
+        HEAD
+
+    Staging Area    -> Cleared
+    Working files   -> Reverted
+
+
+Meaning:
+
+    "Remove the commit and throw away the changes."
+
+
+WARNING:
+    --hard is dangerous.
+    Uncommitted changes can be permanently lost.
+
+
+Easy memory trick:
+
+    SOFT  -> Keep staged
+    MIXED -> Keep unstaged
+    HARD  -> Throw away
+
+
+============================================================
+12. REMOVE FILES
+============================================================
+
+------------------------------------------------------------
+A. DELETE FILE COMPLETELY
+------------------------------------------------------------
+
+git rm file.txt
+
+This removes the file from:
+
+    Working Directory -> Removed
+    Git tracking      -> Removed
+
+
+Then commit:
+
+git commit -m "Remove file.txt"
+
+
+Example:
+
+git rm notes.txt
+git commit -m "Remove notes.txt"
+
+
+------------------------------------------------------------
+B. REMOVE FROM GIT BUT KEEP THE FILE
+------------------------------------------------------------
+
+git rm --cached file.txt
+
+Meaning:
+
+    Your computer -> File remains
+    Git           -> Stops tracking the file
+
+
+Then commit:
+
+git commit -m "Stop tracking file.txt"
+
+
+This is useful when:
+    A file was accidentally tracked
+    and should not be tracked anymore.
+
+
+============================================================
+13. RESTORE A DELETED FILE BEFORE COMMIT
+============================================================
+
+Suppose:
+
+git rm notes.txt
+
+The deletion is staged.
+
+If you change your mind:
+
+Step 1:
+    git restore --staged notes.txt
+
+    This unstages the deletion.
+    The file is still deleted from the working directory.
+
+Step 2:
+    git restore notes.txt
+
+    This restores the file.
+
+
+Remember:
+
+    git restore --staged file
+        -> Undo staging
+
+    git restore file
+        -> Undo working-directory change
+
+
+============================================================
+14. RENAME / MOVE FILES
+============================================================
+
+git mv oldname.txt newname.txt
+
+Then:
+
+git commit -m "Rename oldname.txt to newname.txt"
+
+
+Example:
+
+git mv test.txt notes.txt
+
+
+Conceptually equivalent to:
+
+mv oldname.txt newname.txt
+git rm oldname.txt
+git add newname.txt
+
+
+Remember:
+
+    git mv old new
+        = Rename / move a tracked file
+
+
+============================================================
+15. .GITIGNORE
+============================================================
+
+.gitignore tells Git:
+
+    "Do not track these files/folders."
+
+
+Example .gitignore:
+
+.env
+password.txt
+*.log
+__pycache__/
+venv/
+node_modules/
+.vscode/
+
+
+Common patterns:
+
+file.txt
+    Ignore a specific file
+
+*.log
+    Ignore all .log files
+
+folder/
+    Ignore an entire folder
+
+.env
+    Ignore .env
+
+__pycache__/
+    Ignore Python cache
+
+!important.log
+    Do NOT ignore important.log
+
+
+Example:
+
+*.log
+!important.log
+
+Meaning:
+
+    app.log        -> ignored
+    error.log      -> ignored
+    important.log  -> NOT ignored
+
+
+============================================================
+16. IMPORTANT .GITIGNORE RULE
+============================================================
+
+.gitignore does NOT automatically stop tracking
+a file that Git is already tracking.
+
+Example:
+
+You already tracked:
+
+    .env
+
+Then you add:
+
+    .env
+
+to .gitignore.
+
+Git will continue tracking the existing .env file.
+
+
+To stop tracking it:
+
+git rm --cached .env
+
+Then make sure .env is in .gitignore.
+
+Then:
+
+git add .gitignore
+git commit -m "Stop tracking .env"
+
+
+IMPORTANT:
+    If a secret was already pushed to GitHub,
+    git rm --cached does NOT erase it from Git history.
+
+    Real credentials should be revoked/rotated.
+    History cleanup may also be required.
+
+
+============================================================
+17. PRACTICAL EXAMPLE: FIXING A MISTAKE
+============================================================
+
+Suppose you accidentally staged:
+
+git add passwords.txt
+
+You do not want to commit it.
+
+Step 1: Unstage it
+
+git restore --staged passwords.txt
+
+
+Step 2: Add it to .gitignore
+
+Add this line to .gitignore:
+
+passwords.txt
+
+
+Step 3: Commit .gitignore
+
+git add .gitignore
+git commit -m "Add .gitignore to exclude sensitive files"
+
+
+============================================================
+18. PRACTICAL EXAMPLE: CLEAN WORKING DIRECTORY
+============================================================
+
+Check status:
+
+git status
+
+Review changes:
+
+git diff
+
+Discard changes to one file:
+
+git restore style.css
+
+Discard all unstaged changes:
+
+git restore .
+
+
+WARNING:
+    Make sure you really want to discard the changes.
+
+
+============================================================
+19. CLONING A REPOSITORY
+============================================================
+
+Copy the repository URL from GitHub:
+
+    https://github.com/username/my-project.git
+
+
+Open Git Bash and go to the folder:
+
+cd ~/Documents
+
+
+Clone:
+
+git clone https://github.com/username/my-project.git
+
+
+Enter the repository:
+
+cd my-project
+
+
+Check status:
+
+git status
+
+
+Typical clean output:
+
+    On branch main
+    Your branch is up to date with 'origin/main'.
+    nothing to commit, working tree clean
+
+
+What clone does:
+
+    GitHub Repository
+            |
+            | git clone
+            v
+       Your Computer
+            |
+            v
+       my-project/
+       |-- .git/
+       |-- README.md
+       |-- src/
+       |-- ...
+
+
+The .git folder contains Git repository information,
+including history and metadata.
+
+
+IMPORTANT:
+    Do NOT run git init inside a repository you cloned.
+    It already has a .git folder.
+
+
+============================================================
+20. COMPLETE DAILY GIT WORKFLOW
+============================================================
+
+1. Check status:
+
+git status
+
+
+2. Review unstaged changes:
+
+git diff
+
+
+3. Stage changes:
+
+git add .
+
+
+4. Review staged changes:
+
+git diff --staged
+
+
+5. Commit:
+
+git commit -m "Meaningful message"
+
+
+6. Check status again:
+
+git status
+
+
+7. View history:
+
+git log --oneline
+
+
+Core workflow:
+
+    Working Directory
+            |
+         git add
+            v
+      Staging Area
+            |
+       git commit
+            v
+        Repository
+
+
+============================================================
+21. MASTER COMMAND CHEAT SHEET
+============================================================
+
+git init
+    Create/initialize a Git repository
+
+git clone <url>
+    Download an existing repository
+
+git status
+    Check repository status
+
+git add <file>
+    Stage one file
+
+git add .
+    Stage all changes
+
+git commit -m "message"
+    Commit staged changes
+
+git diff
+    Show unstaged changes
+
+git diff --staged
+    Show staged changes
+
+git diff HEAD~1 HEAD
+    Compare previous and current commits
+
+git log
+    Show detailed history
+
+git log --oneline
+    Show compact history
+
+git restore <file>
+    Discard unstaged changes
+
+git restore .
+    Discard all unstaged changes
+
+git restore --staged <file>
+    Unstage a file
+
+git commit --amend -m "message"
+    Modify the latest commit
+
+git reset --soft HEAD~1
+    Undo last commit, keep changes staged
+
+git reset HEAD~1
+    Undo last commit, keep changes unstaged
+
+git reset --hard HEAD~1
+    Undo last commit and discard changes
+
+git rm <file>
+    Delete file from working directory and Git
+
+git rm --cached <file>
+    Stop tracking file but keep it on computer
+
+git mv <old> <new>
+    Rename/move a file
+
+
+============================================================
+22. MOST IMPORTANT DISTINCTIONS
+============================================================
+
+git restore file
+    -> Discard unstaged changes
+
+git restore --staged file
+    -> Unstage changes
+
+git rm file
+    -> Delete file
+
+git rm --cached file
+    -> Keep file, stop tracking it
+
+git reset --soft HEAD~1
+    -> Undo commit, keep changes staged
+
+git reset HEAD~1
+    -> Undo commit, keep changes unstaged
+
+git reset --hard HEAD~1
+    -> Undo commit and discard changes
+
+
+============================================================
+23. ONE-LINE MEMORY TRICKS
+============================================================
+
+EDIT -> ADD -> COMMIT
+
+Working Directory -> Staging Area -> Repository
+
+
+git restore
+    = Undo working-directory changes
+
+git restore --staged
+    = Unstage
+
+git rm
+    = Delete
+
+git rm --cached
+    = Keep file, stop tracking
+
+SOFT
+    = Keep staged
+
+MIXED
+    = Keep unstaged
+
+HARD
+    = Discard
+
+
+============================================================
+END OF GIT CHEAT SHEET
+============================================================

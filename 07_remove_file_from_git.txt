@@ -149,3 +149,39 @@ Conceptually:
         ↓ git mv
         ↓
     notes.txt
+
+Git tracks file movements:
+    git mv oldname.txt newname.txt
+    git commit -m "Rename oldname.txt to newname.txt"
+This is equivalent to:
+    mv oldname.txt newname.txt
+    git rm oldname.txt
+    git add newname.txt
+
+Practical Examples
+Example 1: Fixing a Mistake
+    # You accidentally staged a file
+    git add passwords.txt
+    
+    # Unstage it
+    git restore --staged passwords.txt
+    
+    # Add it to .gitignore
+    echo "passwords.txt" >> .gitignore
+    
+    # Stage and commit .gitignore
+    git add .gitignore
+    git commit -m "Add .gitignore to exclude sensitive files"
+
+Example 2: Cleaning Up Working Directory
+    # See what's changed
+    git status
+    
+    # Review the changes
+    git diff
+    
+    # Discard changes to a specific file
+    git restore style.css
+    
+    # Or discard all changes
+    git restore .

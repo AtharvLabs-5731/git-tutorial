@@ -26,7 +26,7 @@ Status States
 
 Viewing Changes
 1. See Unstaged Changes
-    git diff
+    A. git diff
 Shows what you've changed but haven't staged yet.
 ex ->
     In about.html
@@ -41,6 +41,14 @@ ex ->
 
 So these are the changes that you have made in about.html & index.html
 Now from queting out of it just press q 
+
+B. See Staged Changes
+    git diff --staged
+Shows what will go into your next commit.
+
+C. See Changes Between Commits
+    git diff HEAD~1 HEAD
+Compares the last commit with the current one. So this will show me difference between current and previous commit 
 
 2. Restore the  Unstaged changes
 Now after modifiying about.html & index.html
@@ -96,15 +104,7 @@ so changes are not restore till this time
 To restore the changes do :
     git restore index.html
 
-4. See Staged Changes
-    git diff --staged
-Shows what will go into your next commit.
-
-5. See Changes Between Commits
-    git diff HEAD~1 HEAD
-Compares the last commit with the current one. So this will show me difference between current and previous commit 
-
-6. Undoing Changes
+4. Undoing Changes
 Git provides several ways to undo changes depending on where they are:
 1. Discard Working Directory Changes
 To restore a file to its last committed state:
@@ -123,7 +123,7 @@ To remove files from staging area but keep changes:
 Or the older syntax:
     git reset HEAD file.txt
 
-7. Amend the Last Commit
+5. Amend the Last Commit
 Now suppose my boss wants this :
     Copyright - All Rights Reserved
 insted of this : 
@@ -144,7 +144,7 @@ then you amend the last commit
     # Amend the previous commit
     git commit --amend -m "New commit message"
 
-8. Reset to a Previous Commit
+6 . Reset to a Previous Commit
 A. Soft Reset (keeps changes in staging):
     git reset --soft HEAD~1
 
