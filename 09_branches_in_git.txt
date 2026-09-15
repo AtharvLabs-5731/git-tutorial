@@ -1,0 +1,204 @@
+1. What is a Branch in Git?
+    A branch in Git is like a separate line of development where we can make changes without affecting the main code.
+
+Think of it like this:
+    main
+    |
+    A
+    |
+    B
+    |
+    C
+
+Now we create a new branch:
+          D
+        /
+    A --- B --- C        main
+        \
+          D --- E      feature
+The feature branch allows us to work on a new feature independently.
+
+Simple definition
+    A branch is a movable pointer to a commit that provides an independent line of development.
+
+2. Why Do We Use Branches?
+
+Branches are mainly used to:
+    Develop new features separately
+    Fix bugs without disturbing the main code
+    Experiment with changes
+    Allow multiple developers to work simultaneously
+    Keep the main branch stable
+
+Real-life example
+Suppose we have a website:
+    main → Working website
+We want to add a login system.
+
+Instead of directly changing main:
+    main
+    ↓
+    Change login
+    ↓
+    Something breaks ❌
+
+We create a branch:
+    main
+    |
+    +---- login-feature
+We develop the login system on login-feature.
+
+After testing:
+    login-feature
+        |
+        ↓
+        merge
+        |
+        ↓
+        main
+
+3. Main Branch
+The main branch is usually called:
+    main
+Older Git repositories commonly used:
+    master
+Today, main is the common default name.
+The main branch generally contains the stable/production-ready code.
+
+4. Check Current Branch
+    git branch
+Example:
+    * main
+    feature-login
+    bug-fix
+The * indicates the branch you are currently on.
+
+Another useful command:
+    git status
+It also shows the current branch.
+
+5. Create a New Branch
+    git branch feature-login
+This creates the branch, but does not switch to it.
+
+Check:
+    git branch
+
+Output:
+    * main
+    feature-login
+You are still on main.
+
+6. Switch to Another Branch
+    git switch feature-login
+Now:
+    main
+    feature-login  ← current branch
+
+You can also use the older command:
+    git checkout feature-login
+
+7. Create + Switch to Branch in One Command
+
+Modern Git:
+    git switch -c feature-login
+
+Older Git:
+    git checkout -b feature-login
+
+This does two things:
+    Create branch
+        +
+    Switch to branch
+
+8. Making Changes in a Branch
+Suppose we create:
+    git switch -c feature-login
+
+Then modify:
+    login.py
+
+Check:
+    git status
+
+Then:
+    git add .
+    git commit -m "Add login feature"
+The commit is now part of the feature-login branch.
+
+Check:
+    git log --oneline
+It will show me:
+    9b1e2fd (HEAD -> feature-login) Add login feature
+    16b7036 (master) Git Cheet Sheet
+    579f706 Renamed important.log to imp.log
+    141e512 Stop tracking notes.txt
+    636340f Remove file from git
+    d101d60 Remove file.txt
+    0e4aa4e stop tracking .env files
+    f54cf9f added env
+    045e0b3 Added gitignore files
+    035c70b Added footer
+    b859d5c Added Index & About page
+    7ffc537 added clone repository concept
+    e18e70d Redesigned all changes
+    8527969 Redesigned Introduction to Git & Github
+    ccdcc4c Initial Commit
+
+Now suppose I want to do some work in my master branch 
+Then while switching the branch It is always better to 
+git status will show us: 
+    On branch ui-revolution
+    nothing to commit, working tree clean
+
+Then switch to master branch by 
+    git switch master
+
+Now 
+    git log --oneline:
+will show us: 
+    16b7036 (HEAD -> master) Git Cheet Sheet
+    579f706 Renamed important.log to imp.log
+    141e512 Stop tracking notes.txt
+    636340f Remove file from git
+    d101d60 Remove file.txt
+    0e4aa4e stop tracking .env files
+    f54cf9f added env
+    045e0b3 Added gitignore files
+    035c70b Added footer
+    b859d5c Added Index & About page
+    7ffc537 added clone repository concept
+    e18e70d Redesigned all changes
+    8527969 Redesigned Introduction to Git & Github
+    ccdcc4c Initial Commit
+
+
+9. Important Concept: Branch Does NOT Create a Full Copy
+A common misunderstanding is:
+    "When I create a branch, Git creates a complete copy of my project."
+Not exactly.
+A branch is basically a pointer/reference to a commit.
+
+Example:
+                main
+                ↓
+    A --- B --- C
+
+Create a branch:
+                main
+                ↓
+    A --- B --- C
+                ↑
+                feature
+Both branches initially point to the same commit C.
+
+When we make a new commit on feature:
+
+                main
+                ↓
+    A --- B --- C
+                 \
+                  D
+                  ↑
+                  feature
+Now the branches point to different commits.
