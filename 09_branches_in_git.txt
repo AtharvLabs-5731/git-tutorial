@@ -11,11 +11,11 @@ Think of it like this:
     C
 
 Now we create a new branch:
-          D
-        /
+             D
+           /
     A --- B --- C        main
-        \
-          D --- E      feature
+           \
+             D --- E      feature
 The feature branch allows us to work on a new feature independently.
 
 Simple definition
@@ -202,3 +202,38 @@ When we make a new commit on feature:
                   ↑
                   feature
 Now the branches point to different commits.
+
+10. Merge a Branch
+After finishing the feature, we can merge it into main.
+
+First switch to main:
+    git switch main
+Then:
+    git merge feature-login
+
+Example:
+Before merge:
+    A --- B --- C        main
+                 \
+                  D --- E    feature-login
+
+After merge:
+    A --- B --- C --- D --- E    main
+Depending on the commit history, Git may create a merge commit instead.
+
+Example:
+
+            D --- E
+           /        \
+    A --- B --- C --- M
+                      ↑
+                      main
+
+11. Delete a Branch
+After merging, we usually delete the branch:
+    git branch -d feature-login
+-d means delete the local branch.
+
+If Git refuses because the branch has unmerged changes:
+    git branch -D feature-login
+⚠️ -D force deletes the branch.
