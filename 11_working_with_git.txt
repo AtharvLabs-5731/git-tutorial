@@ -111,3 +111,5 @@ Forking is commonly used when you want to:
 After forking, you can clone your fork:
     git clone https://github.com/yourusername/repository.git
 
+9. Change Remote URL
+    git remote set-url origin https://github.com/username/new-repo.git
