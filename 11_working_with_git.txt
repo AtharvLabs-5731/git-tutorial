@@ -1,0 +1,113 @@
+1. Create a New Git Repository
+A Git repository is a project folder tracked by Git.
+
+Step 1: Create a project folder
+    mkdir git-tutorial
+    cd git-tutorial
+
+Step 2: Initialize Git
+    git init
+This creates a hidden .git folder and starts tracking the project with Git.
+
+Step 3: Create files and make the first commit
+    git add .
+    git commit -m "Initial commit"
+
+2. Create a Repository on GitHub
+On GitHub:
+    GitHub → New Repository → Repository name: git-tutorial → Create repository
+You can keep it empty when connecting an existing local project, meaning don't add README, .gitignore, etc. unless you specifically want them.
+
+3. Add Remote
+A remote connects your local repository to a GitHub repository.
+    git remote add origin https://github.com/username/git-tutorial.git
+
+Here:
+    origin → name given to the remote repository
+    URL → address of your GitHub repository
+
+4. View Remotes
+To check which remote repositories are connected:
+    git remote -v
+
+Example output:
+    origin  https://github.com/username/git-tutorial.git (fetch)
+    origin  https://github.com/username/git-tutorial.git (push)
+
+Fetch vs Push
+Fetch
+    git fetch
+Downloads the latest changes/information from GitHub to your local Git repository without changing your working files.
+
+Push
+    git push
+Uploads your local commits to GitHub.
+
+Remember
+Fetch → GitHub → Local
+Push  → Local → GitHub
+
+5. Always Check Git Status
+    git status
+It shows:
+    Modified files
+    Untracked files
+    Staged files
+    Current branch
+    Whether everything is committed
+
+A good workflow is:
+    git status
+    git add .
+    git commit -m "Your message"
+    git status
+    git push
+
+Working Tree Clean
+When you see:
+    nothing to commit, working tree clean
+it means there are no uncommitted changes.
+
+Important: A clean working tree is good practice before pushing, but Git does not strictly require it. Only committed changes are pushed.
+
+6. Rename master Branch to main
+Modern GitHub repositories commonly use main.
+
+Check your current branch:
+    git branch
+
+Rename master to main:
+    git branch -M main
+
+Now your current branch is:
+    main
+
+7. Push the main Branch
+    git push -u origin main
+Meaning
+    git push → upload commits
+    origin → GitHub remote
+    main → branch to push
+    -u → sets origin/main as the upstream branch
+After using -u once, you can usually simply use:
+    git push
+
+8. Fork a Repository
+A fork creates a copy of someone else's GitHub repository under your own GitHub account.
+
+For example:
+    Someone's Repository
+              ↓
+            Fork
+              ↓
+    Your GitHub Repository
+
+Why use Fork?
+Forking is commonly used when you want to:
+    Learn from an existing project
+    Modify someone else's project
+    Contribute to an open-source project
+
+After forking, you can clone your fork:
+    git clone https://github.com/yourusername/repository.git
+
