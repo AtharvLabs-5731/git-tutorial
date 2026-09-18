@@ -1,0 +1,307 @@
+1. What is a Merge Conflict?
+A merge conflict happens when Git cannot automatically decide which changes to keep while merging two branches.
+This usually happens when the same part of the same file is changed differently in two branches.
+
+Simple definition
+    A merge conflict occurs when Git finds conflicting changes between branches and cannot automatically merge them.
+
+2. Why Does a Merge Conflict Happen?
+Suppose we have:
+    main
+    |
+    A
+    |
+    B
+
+We create a branch:
+                feature
+                |
+    A --- B --- C
+           \
+            main
+Now both branches modify the same line.
+
+main
+    print("Hello Atharv")
+feature
+    print("Hello Developer")
+
+When we try:
+    git switch main
+    git merge feature
+
+Git doesn't know:
+    Which one should I keep?
+So Git reports a merge conflict.
+
+3. Example of a Merge Conflict
+Suppose main has:
+    name = "Atharv"
+
+And feature changes the same line to:
+    name = "Developer"
+
+When you merge, Git may modify the file like this:
+    <<<<<<< HEAD
+    name = "Atharv"
+    =======
+    name = "Developer"
+    >>>>>>> feature
+These are called conflict markers.
+
+4. Understanding Conflict Markers
+Git uses three important markers:
+    <<<<<<< HEAD
+This represents the changes from the current branch.
+
+If you are currently on main:
+    <<<<<<< HEAD
+means the main version.
+
+=======
+    This separates the two conflicting versions.
+
+>>>>>>> feature
+    This represents the changes coming from the branch you are merging.
+
+So:
+    <<<<<<< HEAD
+    name = "Atharv"
+    =======
+    name = "Developer"
+    >>>>>>> feature
+
+means:
+    Current branch:
+    name = "Atharv"
+
+    Incoming branch:
+    name = "Developer"
+
+5. How to Resolve a Merge Conflict
+Let's understand the complete process.
+Step 1: Merge the branches
+    git merge feature
+
+Git may show:
+    CONFLICT (content): Merge conflict in main.py
+    Automatic merge failed; fix conflicts and then commit the result.
+
+Step 2: Check the status
+    git status
+Git will tell you which files have conflicts.
+
+Example:
+    both modified:   main.py
+
+Step 3: Open the conflicted file
+You may see:
+    <<<<<<< HEAD
+    name = "Atharv"
+    =======
+    name = "Developer"
+    >>>>>>> feature
+Now you must decide what the final code should be.
+
+For example, you decide to keep:
+    name = "Atharv"
+Then remove the conflict markers completely.
+
+Final file:
+    name = "Atharv"
+
+Step 4: Stage the resolved file
+After fixing the conflict:
+    git add main.py
+Or for all resolved files:
+    git add .
+
+Step 5: Complete the merge
+    git commit
+Git creates a merge commit.
+You can also write:
+    git commit -m "Resolve merge conflict"
+
+6. Current vs Incoming Change
+This is very important for interviews.
+Suppose you are on:
+    main
+
+and execute:
+    git merge feature
+
+Then:
+    Current Change  = main
+    Incoming Change = feature
+
+So:
+    <<<<<<< HEAD
+→ Current branch (main)
+
+    >>>>>>> feature
+→ Incoming branch (feature)
+
+7. What If I Don't Want to Merge?
+You can cancel the merge:
+    git merge --abort
+This tries to return your repository to the state it was in before the merge started.
+
+Example:
+    git merge feature
+            ↓
+    CONFLICT ❌
+            ↓
+    git merge --abort
+            ↓
+    Back to pre-merge state
+This is very useful when you realize you need to rethink the merge.
+
+8. How to Check Whether Conflicts Remain
+Use:
+    git status
+
+Before resolution:
+    You have unmerged paths.
+
+After resolving and staging:
+    All conflicts fixed but you are still merging.
+
+After the merge commit:
+    working tree clean
+
+9. Types of Merge Conflicts
+1. Content Conflict
+Both branches modify the same part of a file.
+Example:
+    main:
+    x = 10
+
+    feature:
+    x = 20
+Git doesn't know which value to use.
+
+2. Add/Add Conflict
+Both branches create a file with the same name but different contents.
+Example:
+    main → creates test.py
+    feature → creates test.py
+Git has to decide how to handle the two versions.
+
+3. Rename/Delete Conflict
+One branch renames a file while another branch deletes it.
+Git needs your decision about the final state.
+Example:
+    main -> main.py file -> renames it to -> index.py
+    feature -> main.py file which already exist before creating this feature brach & now in feature branch we wan't to delete this file
+
+10. Steps to Resolve a Merge Conflict
+Step 1: Check the conflicted files
+    git status
+Example:
+    both modified:   index.html
+
+Step 2: Open the conflicted file
+You will see:
+    <<<<<<< HEAD
+    <h1>Welcome to Our Site</h1>
+    =======
+    <h1>Welcome to My Website</h1>
+    >>>>>>> feature-branch
+
+Step 3: Decide the correct final code
+For example, keep the incoming version:
+    <h1>Welcome to My Website</h1>
+
+Step 4: Remove the conflict markers
+The final file must not contain:
+    <<<<<<<
+    =======
+    >>>>>>>
+
+Step 5: Stage the resolved file
+    git add index.html
+
+Step 6: Complete the merge
+    git commit -m "Resolve merge conflict in index.html"
+
+11. Understanding "Ours" and "Theirs"
+These terms are important during a merge.
+Ours
+    ours = current branch
+The branch you are currently on, or the branch receiving the merge.
+
+Example:
+    git switch main
+    git merge feature-branch
+Here:
+    ours = main
+Theirs
+    theirs = incoming branch
+The branch that you are merging into the current branch.
+Here:
+    theirs = feature-branch
+
+Easy way to remember
+git switch main
+git merge feature-branch
+    main            → OURS
+    feature-branch  → THEIRS
+
+12. Keep "Ours"
+You can replace the entire conflicted file with the version from the current branch.
+
+Modern syntax
+    git restore --ours index.html
+    git add index.html
+
+Older syntax
+    git checkout --ours index.html
+    git add index.html
+
+This means:
+    Keep current branch's version
+    Discard incoming branch's version
+Use this when you intentionally want the entire file from the current branch.
+
+13. Keep "Theirs"
+You can replace the entire conflicted file with the incoming branch's version.
+
+Modern syntax
+    git restore --theirs index.html
+    git add index.html
+
+Older syntax
+    git checkout --theirs index.html
+    git add index.html
+
+This means:
+    Keep incoming branch's version
+    Discard current branch's version
+
+14. Important Note
+--ours and --theirs operate on the entire file, not on individual conflict sections.
+
+For example, if a file contains:
+    <<<<<<< HEAD
+    Change A
+    =======
+    Change B
+    >>>>>>> feature-branch
+
+using:
+    git restore --ours index.html
+will take the whole index.html from the current branch.
+
+It does not mean:
+    "Keep ours only for this particular conflict."
+For section-by-section resolution, edit the file manually or use a merge tool.
+
+15. Quick Command Summary
+Command	                       |         Purpose
+git status	                   |         Show conflicted files
+git merge branch-name	       |         Start a merge
+git add file	               |         Mark a resolved file
+git commit	                   |         Complete the merge
+git restore --ours file	       |         Keep current branch's entire file
+git restore --theirs file	   |         Keep incoming branch's entire file
+git merge --abort	           |         Cancel the merge
